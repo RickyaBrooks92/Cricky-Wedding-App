@@ -28,9 +28,13 @@ const CameraPreview: React.FC = () => {
     setFacingMode(facingMode === "user" ? "environment" : "user");
   };
 
+  const videoStyle = {
+    transform: facingMode === "user" ? "scaleX(-1)" : "none",
+  };
+
   return (
     <div>
-      <video ref={videoRef} autoPlay playsInline muted />
+      <video ref={videoRef} autoPlay playsInline muted style={videoStyle} />
       <button onClick={handleFacingModeChange}>Switch Camera</button>
     </div>
   );
