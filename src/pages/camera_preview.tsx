@@ -1,13 +1,14 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 
 const CameraPreview: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [facingMode, setFacingMode] = useState<"user" | "environment">("user");
 
   useEffect(() => {
     if (videoRef.current) {
       if (navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices
-          .getUserMedia({ video: true })
+          .getUserMedia({ video: { facingMode } })
           .then((stream) => {
             if (videoRef.current) {
               videoRef.current.srcObject = stream;
@@ -21,11 +22,16 @@ const CameraPreview: React.FC = () => {
         console.error("getUserMedia not supported");
       }
     }
-  }, []);
+  }, [facingMode]);
+
+  const handleFacingModeChange = () => {
+    setFacingMode(facingMode === "user" ? "environment" : "user");
+  };
 
   return (
     <div>
       <video ref={videoRef} autoPlay playsInline muted />
+      <button onClick={handleFacingModeChange}>Switch Camera</button>
     </div>
   );
 };
