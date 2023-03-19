@@ -29,3 +29,5 @@ const CameraPreview: React.FC = () => {
     </div>
   );
 };
+
+export default CameraPreview;
