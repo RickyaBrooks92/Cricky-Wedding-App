@@ -1,8 +1,12 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const CameraComponent = () => {
   const [picture, setPicture] = useState(null);
   const videoRef = useRef(null);
+  useEffect(() => {
+    const stream = navigator.mediaDevices.getUserMedia({ video: true });
+    videoRef.current.srcObject = stream;
+  }, []);
 
   const handlePictureClick = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
