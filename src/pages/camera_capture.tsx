@@ -1,5 +1,4 @@
-import { useState, useRef } from "react";
-
+import { useState, useRef, Fragment } from "react";
 const CameraComponent = () => {
   const [picture, setPicture] = useState(null);
   const videoRef = useRef(null);
@@ -7,7 +6,7 @@ const CameraComponent = () => {
   const handlePictureClick = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
     videoRef.current.srcObject = stream;
-
+    console.log;
     const canvas = document.createElement("canvas");
     canvas.width = videoRef.current.videoWidth;
     canvas.height = videoRef.current.videoHeight;
