@@ -1,4 +1,6 @@
 import { useState, useRef, Fragment } from "react";
+import Image from "next/image";
+
 const CameraComponent = () => {
   const [picture, setPicture] = useState(null);
   const videoRef = useRef(null);
@@ -6,7 +8,7 @@ const CameraComponent = () => {
   const handlePictureClick = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
     videoRef.current.srcObject = stream;
-    console.log;
+
     const canvas = document.createElement("canvas");
     canvas.width = videoRef.current.videoWidth;
     canvas.height = videoRef.current.videoHeight;
@@ -18,12 +20,30 @@ const CameraComponent = () => {
     setPicture(dataURL);
 
     stream.getTracks().forEach((track) => track.stop());
+
+    const clientId = "5cd8ad4f615348363049e005a8d0196ef231e30f"; // replace with your actual client ID
+    const formData = new FormData();
+    formData.append("image", dataURL.split(",")[1]);
+
+    try {
+      const response = await fetch("https://api.imgur.com/3/image", {
+        method: "POST",
+        headers: {
+          Authorization: `Client-ID ${clientId}`,
+        },
+        body: formData,
+      });
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
     <div>
       {picture ? (
-        <img src={picture} alt="User's taken picture" />
+        <Image src={picture} alt="User's taken picture" />
       ) : (
         <>
           <video ref={videoRef} autoPlay></video>
