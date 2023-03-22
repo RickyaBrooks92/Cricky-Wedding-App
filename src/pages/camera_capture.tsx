@@ -1,5 +1,4 @@
 import { useState, useRef, Fragment } from "react";
-import Image from "next/image";
 
 const CameraComponent = () => {
   const [picture, setPicture] = useState(null);
@@ -43,7 +42,7 @@ const CameraComponent = () => {
   return (
     <div>
       {picture ? (
-        <Image src={picture} alt="User's taken picture" />
+        <img src={picture} alt="User's taken picture" />
       ) : (
         <>
           <video ref={videoRef} autoPlay></video>
