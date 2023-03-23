@@ -29,16 +29,26 @@ const CameraPreview: React.FC = () => {
     setFacingMode(facingMode === "user" ? "environment" : "user");
   };
 
-  const takeSnapshot = () => {
+  const handleSnapshotClick = () => {
     if (videoRef.current) {
       const canvas = document.createElement("canvas");
       canvas.width = videoRef.current.videoWidth;
       canvas.height = videoRef.current.videoHeight;
       canvas
         .getContext("2d")
-        .drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-      const dataURL = canvas.toDataURL();
-      setSnapshot(dataURL);
+        ?.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+
+      const snapshotCanvas = document.createElement("canvas");
+      snapshotCanvas.width = canvas.width;
+      snapshotCanvas.height = canvas.height;
+      const ctx = snapshotCanvas.getContext("2d");
+      if (ctx) {
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+        ctx.drawImage(canvas, 0, 0);
+        const dataURL = snapshotCanvas.toDataURL();
+        setSnapshot(dataURL);
+      }
     }
   };
 
@@ -53,8 +63,8 @@ const CameraPreview: React.FC = () => {
       ) : (
         <video ref={videoRef} autoPlay playsInline muted style={videoStyle} />
       )}
+      <button onClick={handleSnapshotClick}>Take Snapshot</button>
       <button onClick={handleFacingModeChange}>Switch Camera</button>
-      <button onClick={takeSnapshot}>Take Snapshot</button>
     </div>
   );
 };
