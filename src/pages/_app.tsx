@@ -8,7 +8,9 @@ export default function App({ Component, pageProps }: AppProps) {
       <div>
         <Camera />
       </div>
-      <div></div>
+      <div>
+        <Camera_Preview />
+      </div>
     </>
   );
 }
