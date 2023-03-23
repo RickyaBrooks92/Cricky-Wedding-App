@@ -17,10 +17,13 @@
     "@types/react-dom": "18.0.11",
     "eslint": "8.36.0",
     "eslint-config-next": "13.2.4",
+    "expo-camera": "^13.2.1",
     "next": "13.2.4",
     "react": "^18.2.0",
     "react-cam": "^1.1.11",
     "react-dom": "18.2.0",
+    "react-native": "^0.71.4",
+    "react-native-camera": "^4.2.1",
     "typescript": "5.0.2"
   }
 }

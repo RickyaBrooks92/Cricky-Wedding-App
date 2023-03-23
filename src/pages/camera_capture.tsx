@@ -1,4 +1,4 @@
-import { useState, useRef, Fragment } from "react";
+import { useState, useRef } from "react";
 
 const CameraComponent = () => {
   const [picture, setPicture] = useState(null);
@@ -20,7 +20,7 @@ const CameraComponent = () => {
 
     stream.getTracks().forEach((track) => track.stop());
 
-    const clientId = "5cd8ad4f615348363049e005a8d0196ef231e30f"; // replace with your actual client ID
+    const clientId = "658bf713084435a"; // replace with your actual client ID
     const formData = new FormData();
     formData.append("image", dataURL.split(",")[1]);
 
