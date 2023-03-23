@@ -1,62 +1,61 @@
-import React, { useRef, useEffect, useState } from "react";
+import { useState, useRef } from "react";
 
-const CameraPreview: React.FC = () => {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const [facingMode, setFacingMode] = useState<"user" | "environment">("user");
-  const [snapshot, setSnapshot] = useState<string | null>(null);
+const CameraComponent = () => {
+  const [picture, setPicture] = useState(null);
+  const videoRef = useRef(null);
 
-  useEffect(() => {
-    if (videoRef.current) {
-      if (navigator.mediaDevices.getUserMedia) {
-        navigator.mediaDevices
-          .getUserMedia({ video: { facingMode } })
-          .then((stream) => {
-            if (videoRef.current) {
-              videoRef.current.srcObject = stream;
-              videoRef.current.play();
-            }
-          })
-          .catch((error) => {
-            console.error("Failed to access camera", error);
-          });
+  const handlePictureClick = async () => {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    videoRef.current.srcObject = stream;
+
+    const canvas = document.createElement("canvas");
+    canvas.width = videoRef.current.videoWidth;
+    canvas.height = videoRef.current.videoHeight;
+    canvas
+      .getContext("2d")
+      .drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+
+    const dataURL = canvas.toDataURL();
+    setPicture(dataURL);
+
+    stream.getTracks().forEach((track) => track.stop());
+
+    const clientId = "658bf713084435a";
+    const formData = new FormData();
+    formData.append("image", dataURL.split(",")[1]);
+
+    try {
+      const response = await fetch("https://api.imgur.com/3/image", {
+        method: "POST",
+        headers: {
+          Authorization: `Client-ID ${clientId}`,
+        },
+        body: formData,
+      });
+      const data = await response.json();
+      console.log(data);
+      if (data.success) {
+        console.log("Image uploaded successfully!");
       } else {
-        console.error("getUserMedia not supported");
+        console.error(data.data.error);
       }
+    } catch (error) {
+      console.error(error);
     }
-  }, [facingMode]);
-
-  const handleFacingModeChange = () => {
-    setFacingMode(facingMode === "user" ? "environment" : "user");
-  };
-
-  const takeSnapshot = () => {
-    if (videoRef.current) {
-      const canvas = document.createElement("canvas");
-      canvas.width = videoRef.current.videoWidth;
-      canvas.height = videoRef.current.videoHeight;
-      canvas
-        .getContext("2d")
-        .drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
-      const dataURL = canvas.toDataURL();
-      setSnapshot(dataURL);
-    }
-  };
-
-  const videoStyle = {
-    transform: facingMode === "user" ? "scaleX(-1)" : "none",
   };
 
   return (
     <div>
-      {snapshot ? (
-        <img src={snapshot} alt="Snapshot" />
+      {picture ? (
+        <img src={picture} alt="User's taken picture" />
       ) : (
-        <video ref={videoRef} autoPlay playsInline muted style={videoStyle} />
+        <>
+          <video ref={videoRef} autoPlay></video>
+          <button onClick={handlePictureClick}>Take a Picture</button>
+        </>
       )}
-      <button onClick={handleFacingModeChange}>Switch Camera</button>
-      <button onClick={takeSnapshot}>Take Snapshot</button>
     </div>
   );
 };
 
-export default CameraPreview;
+export default CameraComponent;
