@@ -43,8 +43,10 @@ const CameraPreview: React.FC = () => {
       snapshotCanvas.height = canvas.height;
       const ctx = snapshotCanvas.getContext("2d");
       if (ctx) {
-        ctx.translate(canvas.width, 0);
-        ctx.scale(-1, 1);
+        if (facingMode === "user") {
+          ctx.translate(canvas.width, 0);
+          ctx.scale(-1, 1);
+        }
         ctx.drawImage(canvas, 0, 0);
         const dataURL = snapshotCanvas.toDataURL();
         setSnapshot(dataURL);
