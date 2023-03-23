@@ -29,7 +29,7 @@ const CameraPreview: React.FC = () => {
     setFacingMode(facingMode === "user" ? "environment" : "user");
   };
 
-  const handleSnapshotClick = async () => {
+  const handleSnapshotClick = () => {
     if (videoRef.current) {
       const canvas = document.createElement("canvas");
       canvas.width = videoRef.current.videoWidth;
@@ -48,19 +48,13 @@ const CameraPreview: React.FC = () => {
         ctx.drawImage(canvas, 0, 0);
         const dataURL = snapshotCanvas.toDataURL();
         setSnapshot(dataURL);
-
-        // Upload image to Imgur
-        const response = await fetch("https://api.imgur.com/3/image", {
-          method: "POST",
-          headers: {
-            Authorization: "Client-ID 658bf713084435a",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ image: dataURL }),
-        });
-        const data = await response.json();
-        console.log(data.link); // URL of the uploaded image
       }
+    }
+  };
+
+  const handleUploadClick = () => {
+    if (snapshot) {
+      uploadToImgur(snapshot);
     }
   };
 
@@ -76,9 +70,29 @@ const CameraPreview: React.FC = () => {
         <video ref={videoRef} autoPlay playsInline muted style={videoStyle} />
       )}
       <button onClick={handleSnapshotClick}>Take Snapshot</button>
+      <button onClick={handleUploadClick}>Upload to Imgur</button>
       <button onClick={handleFacingModeChange}>Switch Camera</button>
     </div>
   );
 };
 
 export default CameraPreview;
+
+async function uploadToImgur(dataURL: string) {
+  try {
+    const response = await fetch("https://api.imgur.com/3/image", {
+      method: "POST",
+      headers: {
+        Authorization: "Client-ID 658bf713084435a",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        image: dataURL.split(",")[1],
+      }),
+    });
+    const responseData = await response.json();
+    console.log(responseData);
+  } catch (error) {
+    console.error(error);
+  }
+}
