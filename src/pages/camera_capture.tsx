@@ -20,7 +20,7 @@ const CameraComponent = () => {
 
     stream.getTracks().forEach((track) => track.stop());
 
-    const clientId = "YOUR_CLIENT_ID"; // replace with your actual client ID
+    const clientId = "658bf713084435a";
     const formData = new FormData();
     formData.append("image", dataURL.split(",")[1]);
 
