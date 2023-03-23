@@ -6,6 +6,32 @@ const CameraPreview: React.FC = () => {
   const [snapshot, setSnapshot] = useState<string | null>(null);
 
   useEffect(() => {
+    if (snapshot) {
+      const formData = new FormData();
+      formData.append("image", snapshot);
+      fetch("https://api.imgur.com/3/image", {
+        method: "POST",
+        headers: {
+          Authorization: "Client-ID YOUR_CLIENT_ID",
+        },
+        body: formData,
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Failed to upload image");
+          }
+          return response.json();
+        })
+        .then((data) => {
+          console.log("Image uploaded successfully", data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  }, [snapshot]);
+
+  useEffect(() => {
     if (videoRef.current) {
       if (navigator.mediaDevices.getUserMedia) {
         navigator.mediaDevices
@@ -52,12 +78,6 @@ const CameraPreview: React.FC = () => {
     }
   };
 
-  const handleUploadClick = () => {
-    if (snapshot) {
-      uploadToImgur(snapshot);
-    }
-  };
-
   const videoStyle = {
     transform: facingMode === "user" ? "scaleX(-1)" : "none",
   };
@@ -65,34 +85,23 @@ const CameraPreview: React.FC = () => {
   return (
     <div>
       {snapshot ? (
-        <img src={snapshot} alt="Snapshot" />
+        <div>
+          <img src={snapshot} alt="Snapshot" />
+          <div>
+            <button onClick={handleSnapshotClick}>Take Another Snapshot</button>
+          </div>
+        </div>
       ) : (
-        <video ref={videoRef} autoPlay playsInline muted style={videoStyle} />
+        <div>
+          <video ref={videoRef} autoPlay playsInline muted style={videoStyle} />
+          <div>
+            <button onClick={handleSnapshotClick}>Take Snapshot</button>
+          </div>
+        </div>
       )}
-      <button onClick={handleSnapshotClick}>Take Snapshot</button>
-      <button onClick={handleUploadClick}>Upload to Imgur</button>
       <button onClick={handleFacingModeChange}>Switch Camera</button>
     </div>
   );
 };
 
 export default CameraPreview;
-
-async function uploadToImgur(dataURL: string) {
-  try {
-    const response = await fetch("https://api.imgur.com/3/image", {
-      method: "POST",
-      headers: {
-        Authorization: "Client-ID 658bf713084435a",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        image: dataURL.split(",")[1],
-      }),
-    });
-    const responseData = await response.json();
-    console.log(responseData);
-  } catch (error) {
-    console.error(error);
-  }
-}
