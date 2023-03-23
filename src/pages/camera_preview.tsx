@@ -29,7 +29,7 @@ const CameraPreview: React.FC = () => {
     setFacingMode(facingMode === "user" ? "environment" : "user");
   };
 
-  const handleSnapshotClick = () => {
+  const handleSnapshotClick = async () => {
     if (videoRef.current) {
       const canvas = document.createElement("canvas");
       canvas.width = videoRef.current.videoWidth;
@@ -43,13 +43,23 @@ const CameraPreview: React.FC = () => {
       snapshotCanvas.height = canvas.height;
       const ctx = snapshotCanvas.getContext("2d");
       if (ctx) {
-        if (facingMode === "user") {
-          ctx.translate(canvas.width, 0);
-          ctx.scale(-1, 1);
-        }
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
         ctx.drawImage(canvas, 0, 0);
         const dataURL = snapshotCanvas.toDataURL();
         setSnapshot(dataURL);
+
+        // Upload image to Imgur
+        const response = await fetch("https://api.imgur.com/3/image", {
+          method: "POST",
+          headers: {
+            Authorization: "Client-ID 658bf713084435a",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ image: dataURL }),
+        });
+        const data = await response.json();
+        console.log(data.link); // URL of the uploaded image
       }
     }
   };
