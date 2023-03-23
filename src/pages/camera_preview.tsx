@@ -12,7 +12,7 @@ const CameraPreview: React.FC = () => {
       fetch("https://api.imgur.com/3/image", {
         method: "POST",
         headers: {
-          Authorization: "Client-ID YOUR_CLIENT_ID",
+          Authorization: "Client-ID 658bf713084435a",
         },
         body: formData,
       })
