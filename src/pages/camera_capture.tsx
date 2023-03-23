@@ -20,7 +20,7 @@ const CameraComponent = () => {
 
     stream.getTracks().forEach((track) => track.stop());
 
-    const clientId = "658bf713084435a"; // replace with your actual client ID
+    const clientId = "YOUR_CLIENT_ID"; // replace with your actual client ID
     const formData = new FormData();
     formData.append("image", dataURL.split(",")[1]);
 
@@ -34,6 +34,11 @@ const CameraComponent = () => {
       });
       const data = await response.json();
       console.log(data);
+      if (data.success) {
+        console.log("Image uploaded successfully!");
+      } else {
+        console.error(data.data.error);
+      }
     } catch (error) {
       console.error(error);
     }
