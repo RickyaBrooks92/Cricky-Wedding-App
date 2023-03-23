@@ -1,5 +1,4 @@
 import React, { useRef, useEffect, useState } from "react";
-import axios from "axios";
 
 const CameraPreview: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -55,18 +54,16 @@ const CameraPreview: React.FC = () => {
         formData.append("image", dataURL.split(",")[1]);
 
         try {
-          const response = await axios.post(
-            "https://api.imgur.com/3/image",
-            formData,
-            {
-              headers: {
-                Authorization: `Client-ID ${process.env.REACT_APP_IMGUR_CLIENT_ID}`,
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          );
+          const response = await fetch("https://api.imgur.com/3/image", {
+            method: "POST",
+            headers: {
+              Authorization: `Client-ID 658bf713084435a`,
+            },
+            body: formData,
+          });
 
-          setImgurLink(response.data.data.link);
+          const responseData = await response.json();
+          setImgurLink(responseData.data.link);
         } catch (error) {
           console.error("Failed to upload image to Imgur", error);
         }
