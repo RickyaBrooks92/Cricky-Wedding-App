@@ -5,9 +5,7 @@ import Camera_Preview from "./camera_preview";
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
-      <div>
-        <Camera />
-      </div>
+      <div></div>
       <div>
         <Camera_Preview />
       </div>
