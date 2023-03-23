@@ -1,30 +1,62 @@
-import { useState, useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 
-const CameraComponent = () => {
-  const [picture, setPicture] = useState(null);
-  const videoRef = useRef(null);
+const CameraPreview: React.FC = () => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [facingMode, setFacingMode] = useState<"user" | "environment">("user");
+  const [snapshot, setSnapshot] = useState<string | null>(null);
 
-  const handlePictureClick = async () => {
-    const canvas = document.createElement("canvas");
-    canvas.width = 640;
-    canvas.height = 480;
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(videoRef.current, 0, 0, 640, 480);
-    setPicture(canvas.toDataURL("image/jpeg"));
+  useEffect(() => {
+    if (videoRef.current) {
+      if (navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices
+          .getUserMedia({ video: { facingMode } })
+          .then((stream) => {
+            if (videoRef.current) {
+              videoRef.current.srcObject = stream;
+              videoRef.current.play();
+            }
+          })
+          .catch((error) => {
+            console.error("Failed to access camera", error);
+          });
+      } else {
+        console.error("getUserMedia not supported");
+      }
+    }
+  }, [facingMode]);
+
+  const handleFacingModeChange = () => {
+    setFacingMode(facingMode === "user" ? "environment" : "user");
+  };
+
+  const takeSnapshot = () => {
+    if (videoRef.current) {
+      const canvas = document.createElement("canvas");
+      canvas.width = videoRef.current.videoWidth;
+      canvas.height = videoRef.current.videoHeight;
+      canvas
+        .getContext("2d")
+        .drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
+      const dataURL = canvas.toDataURL();
+      setSnapshot(dataURL);
+    }
+  };
+
+  const videoStyle = {
+    transform: facingMode === "user" ? "scaleX(-1)" : "none",
   };
 
   return (
     <div>
-      {picture ? (
-        <img src={picture} alt="User's taken picture" />
+      {snapshot ? (
+        <img src={snapshot} alt="Snapshot" />
       ) : (
-        <>
-          <video ref={videoRef} autoPlay></video>
-          <button onClick={handlePictureClick}>Take a Picture</button>
-        </>
+        <video ref={videoRef} autoPlay playsInline muted style={videoStyle} />
       )}
+      <button onClick={handleFacingModeChange}>Switch Camera</button>
+      <button onClick={takeSnapshot}>Take Snapshot</button>
     </div>
   );
 };
 
-export default CameraComponent;
+export default CameraPreview;
