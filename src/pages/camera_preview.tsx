@@ -1,35 +1,11 @@
 import React, { useRef, useEffect, useState } from "react";
+import axios from "axios";
 
 const CameraPreview: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [facingMode, setFacingMode] = useState<"user" | "environment">("user");
   const [snapshot, setSnapshot] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (snapshot) {
-      const formData = new FormData();
-      formData.append("image", snapshot);
-      fetch("https://api.imgur.com/3/image", {
-        method: "POST",
-        headers: {
-          Authorization: "Client-ID 658bf713084435a",
-        },
-        body: formData,
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Failed to upload image");
-          }
-          return response.json();
-        })
-        .then((data) => {
-          console.log("Image uploaded successfully", data);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    }
-  }, [snapshot]);
+  const [imgurLink, setImgurLink] = useState<string | null>(null);
 
   useEffect(() => {
     if (videoRef.current) {
@@ -55,7 +31,7 @@ const CameraPreview: React.FC = () => {
     setFacingMode(facingMode === "user" ? "environment" : "user");
   };
 
-  const handleSnapshotClick = () => {
+  const handleSnapshotClick = async () => {
     if (videoRef.current) {
       const canvas = document.createElement("canvas");
       canvas.width = videoRef.current.videoWidth;
@@ -73,6 +49,28 @@ const CameraPreview: React.FC = () => {
         ctx.scale(-1, 1);
         ctx.drawImage(canvas, 0, 0);
         const dataURL = snapshotCanvas.toDataURL();
+
+        // Upload image to Imgur
+        const formData = new FormData();
+        formData.append("image", dataURL.split(",")[1]);
+
+        try {
+          const response = await axios.post(
+            "https://api.imgur.com/3/image",
+            formData,
+            {
+              headers: {
+                Authorization: `Client-ID ${process.env.REACT_APP_IMGUR_CLIENT_ID}`,
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+
+          setImgurLink(response.data.data.link);
+        } catch (error) {
+          console.error("Failed to upload image to Imgur", error);
+        }
+
         setSnapshot(dataURL);
       }
     }
@@ -84,20 +82,15 @@ const CameraPreview: React.FC = () => {
 
   return (
     <div>
-      {snapshot ? (
-        <div>
-          <img src={snapshot} alt="Snapshot" />
-          <div>
-            <button onClick={handleSnapshotClick}>Take Another Snapshot</button>
-          </div>
-        </div>
+      {imgurLink ? (
+        <img src={imgurLink} alt="Uploaded to Imgur" />
+      ) : snapshot ? (
+        <img src={snapshot} alt="Snapshot" />
       ) : (
-        <div>
-          <video ref={videoRef} autoPlay playsInline muted style={videoStyle} />
-          <div>
-            <button onClick={handleSnapshotClick}>Take Snapshot</button>
-          </div>
-        </div>
+        <video ref={videoRef} autoPlay playsInline muted style={videoStyle} />
+      )}
+      {!imgurLink && (
+        <button onClick={handleSnapshotClick}>Take Snapshot</button>
       )}
       <button onClick={handleFacingModeChange}>Switch Camera</button>
     </div>
