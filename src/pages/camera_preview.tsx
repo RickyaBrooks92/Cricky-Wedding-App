@@ -30,24 +30,12 @@ const CameraPreview: React.FC = () => {
     setFacingMode(facingMode === "user" ? "environment" : "user");
   };
 
-  const handleCreateAlbumClick = async () => {
-    try {
-      const response = await fetch("https://api.imgur.com/3/album", {
-        method: "POST",
-        headers: {
-          Authorization: `Client-ID 658bf713084435a`,
-        },
-      });
-
-      const responseData = await response.json();
-      console.log(responseData.data.link);
-    } catch (error) {
-      console.error("Failed to create Imgur album", error);
-    }
-  };
-
   const handleSnapshotClick = async () => {
     if (videoRef.current) {
+      const ALBUM_ID = "dQzvc4G";
+      const formData = new FormData();
+
+      // Create a canvas element to draw the snapshot
       const canvas = document.createElement("canvas");
       canvas.width = videoRef.current.videoWidth;
       canvas.height = videoRef.current.videoHeight;
@@ -55,36 +43,29 @@ const CameraPreview: React.FC = () => {
         .getContext("2d")
         ?.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
 
-      const snapshotCanvas = document.createElement("canvas");
-      snapshotCanvas.width = canvas.width;
-      snapshotCanvas.height = canvas.height;
-      const ctx = snapshotCanvas.getContext("2d");
-      if (ctx) {
-        ctx.translate(canvas.width, 0);
-        ctx.scale(-1, 1);
-        ctx.drawImage(canvas, 0, 0);
-        const dataURL = snapshotCanvas.toDataURL();
+      // Convert the canvas to a data URL and append it to the form data
+      const dataURL = canvas.toDataURL();
+      formData.append("image", dataURL.split(",")[1]);
 
-        // Upload image to Imgur
-        const formData = new FormData();
-        formData.append("image", dataURL.split(",")[1]);
+      // Append the album ID to the form data
+      formData.append("album", ALBUM_ID);
 
-        try {
-          const response = await fetch("https://api.imgur.com/3/image", {
-            method: "POST",
-            headers: {
-              Authorization: `Client-ID 658bf713084435a`,
-            },
-            body: formData,
-          });
+      try {
+        const response = await fetch("https://api.imgur.com/3/upload", {
+          method: "POST",
+          headers: {
+            Authorization: "Client-ID 769b766a1f7e35f",
+          },
+          body: formData,
+        });
 
-          const responseData = await response.json();
-          setImgurLink(responseData.data.link);
-        } catch (error) {
-          console.error("Failed to upload image to Imgur", error);
-        }
-
+        const responseData = await response.json();
+        setImgurLink(responseData.data.link);
         setSnapshot(dataURL);
+        console.log(snapshot);
+        console.log(imgurLink);
+      } catch (error) {
+        console.error("Failed to upload image to Imgur", error);
       }
     }
   };
@@ -106,7 +87,6 @@ const CameraPreview: React.FC = () => {
         <button onClick={handleSnapshotClick}>Take Snapshot</button>
       )}
       <button onClick={handleFacingModeChange}>Switch Camera</button>
-      <button onClick={handleCreateAlbumClick}>Create Album</button>
     </div>
   );
 };
