@@ -5,6 +5,7 @@ const CameraPreview: React.FC = () => {
   const [facingMode, setFacingMode] = useState<"user" | "environment">("user");
   const [snapshot, setSnapshot] = useState<string | null>(null);
   const [imgurLink, setImgurLink] = useState<string | null>(null);
+  const [deleteHash, setDeleteHash] = useState<string | null>(null);
 
   useEffect(() => {
     if (videoRef.current) {
@@ -69,6 +70,7 @@ const CameraPreview: React.FC = () => {
 
           const responseData = await response.json();
           setImgurLink(responseData.data.link);
+          setDeleteHash(responseData.data.deletehash);
           console.log(responseData.data.link);
         } catch (error) {
           console.error("Failed to upload image to Imgur", error);
