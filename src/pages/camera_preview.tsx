@@ -32,38 +32,49 @@ const CameraPreview: React.FC = () => {
 
   const handleSnapshotClick = async () => {
     if (videoRef.current) {
-      const ALBUM_HASH = "dQzvc4G";
-      const formData = new FormData();
-
-      // Create a canvas element to draw the snapshot
       const canvas = document.createElement("canvas");
+      const albumId = "v6b8Hl5";
       canvas.width = videoRef.current.videoWidth;
       canvas.height = videoRef.current.videoHeight;
       canvas
         .getContext("2d")
         ?.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
 
-      // Convert the canvas to a data URL and append it to the form data
-      const dataURL = canvas.toDataURL();
-      formData.append("image", dataURL.split(",")[1]);
+      const snapshotCanvas = document.createElement("canvas");
+      snapshotCanvas.width = canvas.width;
+      snapshotCanvas.height = canvas.height;
+      const ctx = snapshotCanvas.getContext("2d");
+      if (ctx) {
+        ctx.translate(canvas.width, 0);
+        ctx.scale(-1, 1);
+        ctx.drawImage(canvas, 0, 0);
+        const dataURL = snapshotCanvas.toDataURL();
 
-      try {
-        const response = await fetch(
-          `https://api.imgur.com/3/album/${ALBUM_HASH}/add`,
-          {
-            method: "POST",
-            headers: {
-              Authorization: "Client-ID 769b766a1f7e35f",
-            },
-            body: formData,
-          }
-        );
+        // Upload image to Imgur album
+        const formData = new FormData();
+        formData.append("image", dataURL.split(",")[1]);
+        formData.append("album", albumId);
 
-        const responseData = await response.json();
-        setImgurLink(responseData.data.images[0].link);
+        try {
+          const response = await fetch(
+            `https://api.imgur.com/3/image?album=${albumId}`,
+            {
+              method: "POST",
+              headers: {
+                Authorization: `Client-ID 658bf713084435a`,
+              },
+              body: formData,
+            }
+          );
+
+          const responseData = await response.json();
+          setImgurLink(responseData.data.link);
+          console.log(responseData.data.link);
+        } catch (error) {
+          console.error("Failed to upload image to Imgur", error);
+        }
+
         setSnapshot(dataURL);
-      } catch (error) {
-        console.error("Failed to add image to Imgur album", error);
       }
     }
   };
