@@ -57,12 +57,12 @@ const CameraPreview: React.FC = () => {
 
         // Flash effect
         const originalBackgroundColor = videoRef.current.style.backgroundColor;
-        videoRef.current.style.backgroundColor = "white";
-        await new Promise((resolve) => setTimeout(resolve, 50));
+        videoRef.current.style.backgroundColor = "red";
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         videoRef.current.style.backgroundColor = originalBackgroundColor;
-        await new Promise((resolve) => setTimeout(resolve, 50));
-        videoRef.current.style.backgroundColor = "white";
-        await new Promise((resolve) => setTimeout(resolve, 50));
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        videoRef.current.style.backgroundColor = "red";
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         videoRef.current.style.backgroundColor = originalBackgroundColor;
 
         const dataURL = snapshotCanvas.toDataURL();
