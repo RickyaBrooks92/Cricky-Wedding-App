@@ -73,6 +73,28 @@ const CameraPreview: React.FC = () => {
     }
   };
 
+  const handleCreateAlbumClick = async () => {
+    const title = "Cricky Wedding Album";
+    const description = "Cricky Wedding Album 2023 from App";
+    const createImgurAlbum = async (title, description) => {
+      const response = await fetch("https://api.imgur.com/3/album", {
+        method: "POST",
+        headers: {
+          Authorization: "Client-ID 658bf713084435a",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title,
+          description,
+        }),
+      });
+
+      const data = await response.json();
+
+      return data.data.id;
+    };
+  };
+
   const videoStyle = {
     transform: facingMode === "user" ? "scaleX(-1)" : "none",
   };
@@ -90,6 +112,7 @@ const CameraPreview: React.FC = () => {
         <button onClick={handleSnapshotClick}>Take Snapshot</button>
       )}
       <button onClick={handleFacingModeChange}>Switch Camera</button>
+      <button onClick={handleCreateAlbumClick}>Create Album</button>
     </div>
   );
 };
