@@ -6,6 +6,9 @@ const CameraPreview: React.FC = () => {
   const [snapshot, setSnapshot] = useState<string | null>(null);
   const [imgurLink, setImgurLink] = useState<string | null>(null);
 
+  const ALBUM_ID = "K0pyWdL";
+  const ACCESS_TOKEN = "c3943d7d300d0dc865983e4036a81fae4f948326";
+
   useEffect(() => {
     if (videoRef.current) {
       if (navigator.mediaDevices.getUserMedia) {
@@ -29,8 +32,7 @@ const CameraPreview: React.FC = () => {
   const handleFacingModeChange = () => {
     setFacingMode(facingMode === "user" ? "environment" : "user");
   };
-  const ALBUM_ID = "K0pyWdL";
-  const ACCESS_TOKEN = "c3943d7d300d0dc865983e4036a81fae4f948326";
+
   const handleSnapshotClick = async () => {
     if (videoRef.current) {
       // Create canvas and draw current video frame
@@ -52,6 +54,17 @@ const CameraPreview: React.FC = () => {
           ctx.scale(-1, 1);
         }
         ctx.drawImage(canvas, 0, 0);
+
+        // Flash effect
+        const originalBackgroundColor = videoRef.current.style.backgroundColor;
+        videoRef.current.style.backgroundColor = "white";
+        await new Promise((resolve) => setTimeout(resolve, 50));
+        videoRef.current.style.backgroundColor = originalBackgroundColor;
+        await new Promise((resolve) => setTimeout(resolve, 50));
+        videoRef.current.style.backgroundColor = "white";
+        await new Promise((resolve) => setTimeout(resolve, 50));
+        videoRef.current.style.backgroundColor = originalBackgroundColor;
+
         const dataURL = snapshotCanvas.toDataURL();
 
         // Upload image to Imgur
@@ -86,16 +99,8 @@ const CameraPreview: React.FC = () => {
 
   return (
     <div>
-      {imgurLink ? (
-        <img src={imgurLink} alt="Uploaded to Imgur" />
-      ) : snapshot ? (
-        <img src={snapshot} alt="Snapshot" />
-      ) : (
-        <video ref={videoRef} autoPlay playsInline muted style={videoStyle} />
-      )}
-      {!imgurLink && (
-        <button onClick={handleSnapshotClick}>Take Snapshot</button>
-      )}
+      <video ref={videoRef} autoPlay playsInline muted style={videoStyle} />
+      <button onClick={handleSnapshotClick}>Take Snapshot</button>
       <button onClick={handleFacingModeChange}>Switch Camera</button>
     </div>
   );
