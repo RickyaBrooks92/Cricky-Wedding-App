@@ -30,6 +30,22 @@ const CameraPreview: React.FC = () => {
     setFacingMode(facingMode === "user" ? "environment" : "user");
   };
 
+  const handleCreateAlbumClick = async () => {
+    try {
+      const response = await fetch("https://api.imgur.com/3/album", {
+        method: "POST",
+        headers: {
+          Authorization: `Client-ID 658bf713084435a`,
+        },
+      });
+
+      const responseData = await response.json();
+      console.log(responseData.data.link);
+    } catch (error) {
+      console.error("Failed to create Imgur album", error);
+    }
+  };
+
   const handleSnapshotClick = async () => {
     if (videoRef.current) {
       const canvas = document.createElement("canvas");
@@ -71,28 +87,6 @@ const CameraPreview: React.FC = () => {
         setSnapshot(dataURL);
       }
     }
-  };
-
-  const handleCreateAlbumClick = async () => {
-    const title = "Cricky Wedding Album";
-    const description = "Cricky Wedding Album 2023 from App";
-    const createImgurAlbum = async (title, description) => {
-      const response = await fetch("https://api.imgur.com/3/album", {
-        method: "POST",
-        headers: {
-          Authorization: "Client-ID 658bf713084435a",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title,
-          description,
-        }),
-      });
-
-      const data = await response.json();
-
-      return data.data.id;
-    };
   };
 
   const videoStyle = {
