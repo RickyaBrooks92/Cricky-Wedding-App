@@ -29,11 +29,11 @@ const CameraPreview: React.FC = () => {
   const handleFacingModeChange = () => {
     setFacingMode(facingMode === "user" ? "environment" : "user");
   };
-
+  const ALBUM_ID = "K0pyWdL";
+  const ACCESS_TOKEN = "c3943d7d300d0dc865983e4036a81fae4f948326";
   const handleSnapshotClick = async () => {
     if (videoRef.current) {
-      const ALBUM_ID = "K0pyWdL";
-      const ACCESS_TOKEN = "c3943d7d300d0dc865983e4036a81fae4f948326";
+      // Create canvas and draw current video frame
       const canvas = document.createElement("canvas");
       canvas.width = videoRef.current.videoWidth;
       canvas.height = videoRef.current.videoHeight;
@@ -41,13 +41,16 @@ const CameraPreview: React.FC = () => {
         .getContext("2d")
         ?.drawImage(videoRef.current, 0, 0, canvas.width, canvas.height);
 
+      // Create snapshot canvas and apply mirroring transformation if front-facing camera
       const snapshotCanvas = document.createElement("canvas");
       snapshotCanvas.width = canvas.width;
       snapshotCanvas.height = canvas.height;
       const ctx = snapshotCanvas.getContext("2d");
       if (ctx) {
-        ctx.translate(canvas.width, 0);
-        ctx.scale(-1, 1);
+        if (facingMode === "user") {
+          ctx.translate(canvas.width, 0);
+          ctx.scale(-1, 1);
+        }
         ctx.drawImage(canvas, 0, 0);
         const dataURL = snapshotCanvas.toDataURL();
 
