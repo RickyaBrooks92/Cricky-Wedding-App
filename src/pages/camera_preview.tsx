@@ -54,15 +54,13 @@ const CameraPreview: React.FC = () => {
         // Upload image to Imgur album
         const formData = new FormData();
         formData.append("image", dataURL.split(",")[1]);
+        formData.append("album", albumId);
 
         try {
           const response = await fetch(
-            `https://api.imgur.com/3/image?album=${albumId}`,
+            `https://api.imgur.com/3/upload?album=${albumId}`,
             {
               method: "POST",
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
               body: formData,
             }
           );
