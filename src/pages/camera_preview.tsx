@@ -5,7 +5,6 @@ const CameraPreview: React.FC = () => {
   const [facingMode, setFacingMode] = useState<"user" | "environment">("user");
   const [snapshot, setSnapshot] = useState<string | null>(null);
   const [imgurLink, setImgurLink] = useState<string | null>(null);
-  const [deleteHash, setDeleteHash] = useState<string | null>(null);
 
   useEffect(() => {
     if (videoRef.current) {
@@ -33,8 +32,9 @@ const CameraPreview: React.FC = () => {
 
   const handleSnapshotClick = async () => {
     if (videoRef.current) {
+      const ALBUM_ID = "K0pyWdL";
+      const ACCESS_TOKEN = "c3943d7d300d0dc865983e4036a81fae4f948326";
       const canvas = document.createElement("canvas");
-      const albumId = "v6b8Hl5";
       canvas.width = videoRef.current.videoWidth;
       canvas.height = videoRef.current.videoHeight;
       canvas
@@ -51,23 +51,23 @@ const CameraPreview: React.FC = () => {
         ctx.drawImage(canvas, 0, 0);
         const dataURL = snapshotCanvas.toDataURL();
 
-        // Upload image to Imgur album
+        // Upload image to Imgur
         const formData = new FormData();
         formData.append("image", dataURL.split(",")[1]);
-        formData.append("album", albumId);
+        formData.append("album", ALBUM_ID);
 
         try {
-          const response = await fetch(
-            `https://api.imgur.com/3/upload?album=${albumId}`,
-            {
-              method: "POST",
-              body: formData,
-            }
-          );
+          const response = await fetch("https://api.imgur.com/3/image", {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${ACCESS_TOKEN}`,
+            },
+            body: formData,
+          });
 
           const responseData = await response.json();
+          console.log(responseData);
           setImgurLink(responseData.data.link);
-          console.log(responseData.data.link);
         } catch (error) {
           console.error("Failed to upload image to Imgur", error);
         }
