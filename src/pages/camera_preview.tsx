@@ -32,7 +32,7 @@ const CameraPreview: React.FC = () => {
 
   const handleSnapshotClick = async () => {
     if (videoRef.current) {
-      const ALBUM_ID = "dQzvc4G";
+      const ALBUM_HASH = "dQzvc4G";
       const formData = new FormData();
 
       // Create a canvas element to draw the snapshot
@@ -47,25 +47,23 @@ const CameraPreview: React.FC = () => {
       const dataURL = canvas.toDataURL();
       formData.append("image", dataURL.split(",")[1]);
 
-      // Append the album ID to the form data
-      formData.append("album", ALBUM_ID);
-
       try {
-        const response = await fetch("https://api.imgur.com/3/upload", {
-          method: "POST",
-          headers: {
-            Authorization: "Client-ID 769b766a1f7e35f",
-          },
-          body: formData,
-        });
+        const response = await fetch(
+          `https://api.imgur.com/3/album/${ALBUM_HASH}/add`,
+          {
+            method: "POST",
+            headers: {
+              Authorization: "Client-ID 769b766a1f7e35f",
+            },
+            body: formData,
+          }
+        );
 
         const responseData = await response.json();
-        setImgurLink(responseData.data.link);
+        setImgurLink(responseData.data.images[0].link);
         setSnapshot(dataURL);
-        console.log(snapshot);
-        console.log(imgurLink);
       } catch (error) {
-        console.error("Failed to upload image to Imgur", error);
+        console.error("Failed to add image to Imgur album", error);
       }
     }
   };
