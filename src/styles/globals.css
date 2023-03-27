@@ -1,4 +1,19 @@
-.taken-picture {
-  filter: contrast(150%) grayscale(100%) brightness(90%) sepia(100%)
-    hue-rotate(120deg);
+.flash {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  opacity: 0.8;
+  animation: flash-animation 0.2s linear;
+}
+
+@keyframes flash-animation {
+  0% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+  }
 }

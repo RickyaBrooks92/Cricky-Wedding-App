@@ -54,18 +54,18 @@ const CameraPreview: React.FC = () => {
           ctx.scale(-1, 1);
         }
         ctx.drawImage(canvas, 0, 0);
-
-        // Flash effect
-        const originalBackgroundColor = videoRef.current.style.backgroundColor;
-        videoRef.current.style.backgroundColor = "red";
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        videoRef.current.style.backgroundColor = originalBackgroundColor;
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        videoRef.current.style.backgroundColor = "red";
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        videoRef.current.style.backgroundColor = originalBackgroundColor;
-
         const dataURL = snapshotCanvas.toDataURL();
+
+        // Flash the snapshot
+        const snapshot = document.createElement("div");
+        snapshot.classList.add("snapshot");
+        snapshot.style.width = `${snapshotCanvas.width}px`;
+        snapshot.style.height = `${snapshotCanvas.height}px`;
+        document.body.appendChild(snapshot);
+
+        setTimeout(() => {
+          snapshot.remove();
+        }, 500);
 
         // Upload image to Imgur
         const formData = new FormData();
@@ -89,6 +89,15 @@ const CameraPreview: React.FC = () => {
         }
 
         setSnapshot(dataURL);
+
+        // Add flash effect
+        const flash = document.createElement("div");
+        flash.classList.add("flash");
+        document.body.appendChild(flash);
+
+        setTimeout(() => {
+          flash.remove();
+        }, 200);
       }
     }
   };
