@@ -54,7 +54,6 @@ const CameraPreview: React.FC = () => {
         // Upload image to Imgur album
         const formData = new FormData();
         formData.append("image", dataURL.split(",")[1]);
-        formData.append("album", albumId);
 
         try {
           const response = await fetch(
@@ -62,7 +61,7 @@ const CameraPreview: React.FC = () => {
             {
               method: "POST",
               headers: {
-                Authorization: `Client-ID 658bf713084435a`,
+                "Content-Type": "multipart/form-data",
               },
               body: formData,
             }
@@ -70,7 +69,6 @@ const CameraPreview: React.FC = () => {
 
           const responseData = await response.json();
           setImgurLink(responseData.data.link);
-          setDeleteHash(responseData.data.deletehash);
           console.log(responseData.data.link);
         } catch (error) {
           console.error("Failed to upload image to Imgur", error);
