@@ -17,3 +17,36 @@
     opacity: 0;
   }
 }
+
+.video-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.video {
+  width: 100%;
+  height: auto;
+  transform: scaleX(-1);
+  -webkit-transform: scaleX(-1);
+}
+
+.button-container {
+  background: none;
+  border: none;
+  position: absolute;
+  bottom: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.button {
+  background: none;
+  border: none;
+}
+
+.icon {
+  color: white;
+}

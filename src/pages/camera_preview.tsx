@@ -1,33 +1,9 @@
 import React, { useRef, useEffect, useState } from "react";
-import Button from "@mui/material/Button";
 
-import { styled } from "@mui/material/styles";
-
-const VideoContainer = styled("div")({
-  position: "relative",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-});
-
-const StyledVideo = styled("video")({
-  width: "100%",
-  height: "auto",
-});
-
-const ButtonContainer = styled("div")({
-  position: "absolute",
-  bottom: "10px",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-});
-
-const StyledButton = styled(Button)({
-  margin: "0 10px",
-  color: "#fff",
-  backgroundColor: "rgba(0, 0, 0, 0.5)",
-});
+import FlipCameraIosIcon from "@mui/icons-material/FlipCameraIos";
+import CircleRoundedIcon from "@mui/icons-material/CircleRounded";
+import { red } from "@mui/material/colors";
+import { withTheme } from "@mui/material";
 
 const CameraPreview: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -136,23 +112,19 @@ const CameraPreview: React.FC = () => {
   };
 
   return (
-    <VideoContainer>
-      <StyledVideo
-        ref={videoRef}
-        autoPlay
-        playsInline
-        muted
-        style={videoStyle}
-      />
-      <ButtonContainer>
-        <StyledButton variant="contained" onClick={handleSnapshotClick}>
-          Take Snapshot
-        </StyledButton>
-        <StyledButton variant="contained" onClick={switchCamera}>
-          Switch Camera
-        </StyledButton>
-      </ButtonContainer>
-    </VideoContainer>
+    <div className="video-container">
+      <video ref={videoRef} autoPlay playsInline muted className="video">
+        <source src="path/to/video.mp4" type="video/mp4" />
+      </video>
+      <div className="button-container">
+        <button className="button" onClick={handleSnapshotClick}>
+          <CircleRoundedIcon className="icon" />
+        </button>
+        <button className="button" onClick={switchCamera}>
+          <FlipCameraIosIcon className="icon" />
+        </button>
+      </div>
+    </div>
   );
 };
 
