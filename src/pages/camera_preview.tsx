@@ -57,17 +57,6 @@ const CameraPreview: React.FC = () => {
         ctx.drawImage(canvas, 0, 0);
         const dataURL = snapshotCanvas.toDataURL();
 
-        // Flash the snapshot
-        const snapshot = document.createElement("div");
-        snapshot.classList.add("snapshot");
-        snapshot.style.width = `${snapshotCanvas.width}px`;
-        snapshot.style.height = `${snapshotCanvas.height}px`;
-        document.body.appendChild(snapshot);
-
-        setTimeout(() => {
-          snapshot.remove();
-        }, 500);
-
         // Upload image to Imgur
         const formData = new FormData();
         formData.append("image", dataURL.split(",")[1]);
