@@ -2,14 +2,10 @@ import React, { useRef, useEffect, useState } from "react";
 
 import FlipCameraIosIcon from "@mui/icons-material/FlipCameraIos";
 import CircleRoundedIcon from "@mui/icons-material/CircleRounded";
-import { red } from "@mui/material/colors";
-import { withTheme } from "@mui/material";
 
 const CameraPreview: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [facingMode, setFacingMode] = useState<"user" | "environment">("user");
-  const [snapshot, setSnapshot] = useState<string | null>(null);
-  const [imgurLink, setImgurLink] = useState<string | null>(null);
 
   const ALBUM_ID = "K0pyWdL";
   const ACCESS_TOKEN = "c3943d7d300d0dc865983e4036a81fae4f948326";
@@ -88,18 +84,14 @@ const CameraPreview: React.FC = () => {
 
           const responseData = await response.json();
           console.log(responseData);
-          setImgurLink(responseData.data.link);
         } catch (error) {
           console.error("Failed to upload image to Imgur", error);
         }
-
-        setSnapshot(dataURL);
 
         // Add flash effect
         const flash = document.createElement("div");
         flash.classList.add("flash");
         document.body.appendChild(flash);
-
         setTimeout(() => {
           flash.remove();
         }, 200);
@@ -113,9 +105,14 @@ const CameraPreview: React.FC = () => {
 
   return (
     <div className="video-container">
-      <video ref={videoRef} autoPlay playsInline muted className="video">
-        <source src="path/to/video.mp4" type="video/mp4" />
-      </video>
+      <video
+        ref={videoRef}
+        autoPlay
+        playsInline
+        muted
+        className="video"
+        style={videoStyle}
+      ></video>
       <div className="button-container">
         <button className="button" onClick={handleSnapshotClick}>
           <CircleRoundedIcon className="icon" />
