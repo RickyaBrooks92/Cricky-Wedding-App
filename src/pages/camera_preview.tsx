@@ -1,4 +1,33 @@
 import React, { useRef, useEffect, useState } from "react";
+import Button from "@mui/material/Button";
+
+import { styled } from "@mui/material/styles";
+
+const VideoContainer = styled("div")({
+  position: "relative",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+});
+
+const StyledVideo = styled("video")({
+  width: "100%",
+  height: "auto",
+});
+
+const ButtonContainer = styled("div")({
+  position: "absolute",
+  bottom: "10px",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+});
+
+const StyledButton = styled(Button)({
+  margin: "0 10px",
+  color: "#fff",
+  backgroundColor: "rgba(0, 0, 0, 0.5)",
+});
 
 const CameraPreview: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -29,8 +58,8 @@ const CameraPreview: React.FC = () => {
     }
   }, [facingMode]);
 
-  const handleFacingModeChange = () => {
-    setFacingMode(facingMode === "user" ? "environment" : "user");
+  const switchCamera = () => {
+    setFacingMode((prevMode) => (prevMode === "user" ? "environment" : "user"));
   };
 
   const handleSnapshotClick = async () => {
@@ -107,11 +136,23 @@ const CameraPreview: React.FC = () => {
   };
 
   return (
-    <div>
-      <video ref={videoRef} autoPlay playsInline muted style={videoStyle} />
-      <button onClick={handleSnapshotClick}>Take Snapshot</button>
-      <button onClick={handleFacingModeChange}>Switch Camera</button>
-    </div>
+    <VideoContainer>
+      <StyledVideo
+        ref={videoRef}
+        autoPlay
+        playsInline
+        muted
+        style={videoStyle}
+      />
+      <ButtonContainer>
+        <StyledButton variant="contained" onClick={handleSnapshotClick}>
+          Take Snapshot
+        </StyledButton>
+        <StyledButton variant="contained" onClick={switchCamera}>
+          Switch Camera
+        </StyledButton>
+      </ButtonContainer>
+    </VideoContainer>
   );
 };
 
