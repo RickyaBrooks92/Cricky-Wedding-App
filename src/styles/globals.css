@@ -27,7 +27,7 @@
 
 .video {
   width: 100%;
-  height: auto;
+  height: 100%;
   transform: scaleX(-1);
   -webkit-transform: scaleX(-1);
 }
