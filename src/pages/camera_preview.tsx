@@ -99,8 +99,8 @@ const CameraPreview: React.FC = () => {
         autoPlay
         playsInline
         muted
-        className="video"
         controls={false}
+        className="video"
         style={videoStyle}
       ></video>
       <div className="button-container">
