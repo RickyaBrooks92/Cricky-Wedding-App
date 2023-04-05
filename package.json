@@ -23,6 +23,7 @@
     "next": "13.2.4",
     "react": "^18.2.0",
     "react-cam": "^1.1.11",
+    "react-context": "^0.0.3",
     "react-dom": "18.2.0",
     "react-native": "^0.71.4",
     "react-native-camera": "^4.2.1",

@@ -1,10 +1,16 @@
-import React, { useRef, useEffect, useState } from "react";
-
+import React, { useRef, useEffect, useState, useContext } from "react";
+import Flash_Button from "./Flash_Button";
 import FlipCameraIosIcon from "@mui/icons-material/FlipCameraIos";
 import CircleRoundedIcon from "@mui/icons-material/CircleRounded";
+import { SnapshotsContext } from "../_app";
 
 const CameraPreview: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const { snapshots, setSnapshots } = useContext(SnapshotsContext) as {
+    snapshots: number;
+    setSnapshots: (snapshots: number) => void;
+  };
+
   const [facingMode, setFacingMode] = useState<"user" | "environment">("user");
 
   const ALBUM_ID = "K0pyWdL";
@@ -70,7 +76,8 @@ const CameraPreview: React.FC = () => {
             },
             body: formData,
           });
-
+          setSnapshots(snapshots + 1);
+          localStorage.setItem("snapshotsCount", snapshots.toString());
           const responseData = await response.json();
           console.log(responseData);
         } catch (error) {
@@ -103,6 +110,9 @@ const CameraPreview: React.FC = () => {
         className="video"
         style={videoStyle}
       ></video>
+      <div className="Flash">
+        <Flash_Button />
+      </div>
       <div className="button-container">
         <button className="button" onClick={handleSnapshotClick}>
           <CircleRoundedIcon className="icon" />
