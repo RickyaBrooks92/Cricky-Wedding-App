@@ -70,6 +70,14 @@ const CameraPreview: React.FC = () => {
 
         try {
           if (snapshots < 8) {
+            // adding flash effect before uploading image
+            const flash = document.createElement("div");
+            flash.classList.add("flash");
+            document.body.appendChild(flash);
+            setTimeout(() => {
+              flash.remove();
+            }, 200);
+            // uploading image
             const response = await fetch("https://api.imgur.com/3/image", {
               method: "POST",
               headers: {
@@ -89,14 +97,6 @@ const CameraPreview: React.FC = () => {
         } catch (error) {
           console.error("Failed to upload image to Imgur", error);
         }
-
-        // Add flash effect
-        const flash = document.createElement("div");
-        flash.classList.add("flash");
-        document.body.appendChild(flash);
-        setTimeout(() => {
-          flash.remove();
-        }, 200);
       }
     }
   };
@@ -125,9 +125,7 @@ const CameraPreview: React.FC = () => {
         </button>
       </div>
       <div className="count-flash-container">
-        <button className="count-flash-button">
-          <Flash_Button />
-        </button>
+        <button className="count-flash-button">{/* <Flash_Button /> */}</button>
         <Count_Preview />
       </div>
     </div>
