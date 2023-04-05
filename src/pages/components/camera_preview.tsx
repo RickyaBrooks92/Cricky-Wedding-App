@@ -3,7 +3,7 @@ import Flash_Button from "./Flash_Button";
 import FlipCameraIosIcon from "@mui/icons-material/FlipCameraIos";
 import CircleRoundedIcon from "@mui/icons-material/CircleRounded";
 import { SnapshotsContext } from "../_app";
-
+import Count_Preview from "./Count_Preview";
 const CameraPreview: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const { snapshots, setSnapshots } = useContext(SnapshotsContext) as {
@@ -69,17 +69,23 @@ const CameraPreview: React.FC = () => {
         formData.append("album", ALBUM_ID);
 
         try {
-          const response = await fetch("https://api.imgur.com/3/image", {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${ACCESS_TOKEN}`,
-            },
-            body: formData,
-          });
-          setSnapshots(snapshots + 1);
-          localStorage.setItem("snapshotsCount", snapshots.toString());
-          const responseData = await response.json();
-          console.log(responseData);
+          if (snapshots >= 8) {
+            const response = await fetch("https://api.imgur.com/3/image", {
+              method: "POST",
+              headers: {
+                Authorization: `Bearer ${ACCESS_TOKEN}`,
+              },
+              body: formData,
+            });
+            setSnapshots(snapshots + 1);
+            localStorage.setItem("snapshotsCount", snapshots.toString());
+            const responseData = await response.json();
+            console.log(responseData);
+          } else if (snapshots <= 9) {
+            {
+              alert("You have reached the maximum number of snapshots");
+            }
+          }
         } catch (error) {
           console.error("Failed to upload image to Imgur", error);
         }
@@ -110,9 +116,6 @@ const CameraPreview: React.FC = () => {
         className="video"
         style={videoStyle}
       ></video>
-      <div className="Flash">
-        <Flash_Button />
-      </div>
       <div className="button-container">
         <button className="button" onClick={handleSnapshotClick}>
           <CircleRoundedIcon className="icon" />
@@ -120,6 +123,12 @@ const CameraPreview: React.FC = () => {
         <button className="button" onClick={switchCamera}>
           <FlipCameraIosIcon className="icon" />
         </button>
+      </div>
+      <div className="count-flash-container">
+        <button className="count-flash-button">
+          <Flash_Button />
+        </button>
+        <Count_Preview />
       </div>
     </div>
   );
