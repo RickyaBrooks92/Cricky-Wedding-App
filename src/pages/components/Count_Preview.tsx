@@ -9,7 +9,7 @@ const Count_Preview = () => {
 
   return (
     <div>
-      <p>{snapshots}</p>
+      <p>{snapshots}/8</p>
     </div>
   );
 };
