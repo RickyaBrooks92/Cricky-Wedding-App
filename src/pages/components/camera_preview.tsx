@@ -125,7 +125,7 @@ const CameraPreview: React.FC = () => {
         </button>
       </div>
       <div className="count-flash-container">
-        <button className="count-flash-button">{/* <Flash_Button /> */}</button>
+        {/* <button className="count-flash-button"><Flash_Button /></button> */}
         <Count_Preview />
       </div>
     </div>
