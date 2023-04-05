@@ -69,7 +69,7 @@ const CameraPreview: React.FC = () => {
         formData.append("album", ALBUM_ID);
 
         try {
-          if (snapshots <= 9) {
+          if (snapshots < 8) {
             const response = await fetch("https://api.imgur.com/3/image", {
               method: "POST",
               headers: {
@@ -81,7 +81,7 @@ const CameraPreview: React.FC = () => {
             localStorage.setItem("snapshotsCount", snapshots.toString());
             const responseData = await response.json();
             console.log(responseData);
-          } else if (snapshots >= 8) {
+          } else {
             {
               alert("You have reached the maximum number of snapshots");
             }
