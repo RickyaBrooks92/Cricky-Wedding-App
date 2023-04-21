@@ -85,6 +85,10 @@
   overflow: hidden;
 } */
 
+video {
+  touch-action: none;
+}
+
 .welcome-popup {
   position: fixed;
   top: 50%;
