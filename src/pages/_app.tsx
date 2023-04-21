@@ -24,7 +24,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <SnapshotsContext.Provider value={{ snapshots, setSnapshots }}>
-      <div>
+      <div className="home">
         <Camera_Preview />
       </div>
     </SnapshotsContext.Provider>

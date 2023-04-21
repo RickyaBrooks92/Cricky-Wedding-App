@@ -73,6 +73,7 @@ const CameraPreview: React.FC = () => {
             // adding flash effect before uploading image
             const flash = document.createElement("div");
             flash.classList.add("flash");
+
             document.body.appendChild(flash);
             setTimeout(() => {
               flash.remove();
@@ -103,6 +104,7 @@ const CameraPreview: React.FC = () => {
 
   const videoStyle = {
     transform: facingMode === "user" ? "scaleX(-1)" : "none",
+    backgroundColor: facingMode === "user" ? "black" : "transparent",
   };
 
   return (
@@ -125,7 +127,6 @@ const CameraPreview: React.FC = () => {
         </button>
       </div>
       <div className="count-flash-container">
-        {/* <button className="count-flash-button"><Flash_Button /></button> */}
         <Count_Preview />
       </div>
     </div>
