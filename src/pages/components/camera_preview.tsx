@@ -108,7 +108,7 @@ const CameraPreview: React.FC = () => {
   };
 
   return (
-    <div className="video-container">
+    <div className="video-container black-background">
       <video
         ref={videoRef}
         autoPlay
